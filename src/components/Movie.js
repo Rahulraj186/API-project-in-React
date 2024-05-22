@@ -2,12 +2,12 @@ import React from "react";
 
 import classes from "./Movie.module.css";
 
-const Movie = (props) => {
+const Movie = ({ key, title, releaseDate, openingText }) => {
   return (
     <li className={classes.movie}>
-      <h2>{props.title}</h2>
-      <h3>{props.release_date}</h3>
-      <p>{props.opening_crawl}</p>
+      <h2>{title}</h2>
+      <h3>{releaseDate}</h3>
+      <p>{openingText}</p>
     </li>
   );
 };
