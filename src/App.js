@@ -1,6 +1,7 @@
-import React, { useCallback } from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+
 import MoviesList from "./components/MoviesList";
+import AddMovie from "./components/AddMovie";
 import "./App.css";
 
 function App() {
@@ -8,15 +9,17 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchmoviehandler = useCallback(async () => {
+  const fetchMoviesHandler = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("https://swapi.dev/api/films");
-
+      const response = await fetch(
+        "https://react-api-project-20ccf-default-rtdb.firebaseio.com/movies.json"
+      );
       if (!response.ok) {
-        throw new Error("Something Went Wrong!");
+        throw new Error("Something went wrong!");
       }
+
       const data = await response.json();
 
       const transformedMovies = data.results.map((movieData) => {
@@ -28,17 +31,21 @@ function App() {
         };
       });
       setMovies(transformedMovies);
-      setIsLoading(false);
     } catch (error) {
       setError(error.message);
     }
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    fetchmoviehandler();
-  }, [fetchmoviehandler]);
+    fetchMoviesHandler();
+  }, [fetchMoviesHandler]);
 
-  let content = <p>Found no Movies</p>;
+  function addMovieHandler(movie) {
+    console.log(movie);
+  }
+
+  let content = <p>Found no movies.</p>;
 
   if (movies.length > 0) {
     content = <MoviesList movies={movies} />;
@@ -47,13 +54,18 @@ function App() {
   if (error) {
     content = <p>{error}</p>;
   }
+
   if (isLoading) {
     content = <p>Loading...</p>;
   }
+
   return (
     <React.Fragment>
       <section>
-        <button onClick={fetchmoviehandler}>Fetch Movies</button>
+        <AddMovie onAddMovie={addMovieHandler} />
+      </section>
+      <section>
+        <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
       <section>{content}</section>
     </React.Fragment>
